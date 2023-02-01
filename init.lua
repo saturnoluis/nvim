@@ -1,4 +1,40 @@
--- Custom vim configurations
+-- Install Packer                          🐕
+-- ******************************************
+
+local ensure_packer = function()
+   local fn = vim.fn
+   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+   if fn.empty(fn.glob(install_path)) > 0 then
+      fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+      vim.cmd [[packadd packer.nvim]]
+      return true
+   end
+   return false
+end
+
+local packer_bootstrap = ensure_packer()
+
+require('packer').startup(function(use)
+   use 'wbthomason/packer.nvim'
+
+   -- Color schemes
+   use 'navarasu/onedark.nvim'
+   use 'ellisonleao/gruvbox.nvim'
+
+   -- Statusline
+   use {
+      'nvim-lualine/lualine.nvim'
+   }
+
+   -- Automatically set up your configuration after cloning packer.nvim
+   -- Put this at the end after all plugins
+   if packer_bootstrap then
+      require('packer').sync()
+   end
+end)
+
+
+-- Set custom configurations               🐕
 -- ******************************************
 
 -- Map leader key
@@ -24,39 +60,41 @@ vim.opt.list = true
 -- Autoread changes in opened files
 vim.opt.autoread = true
 
+-- Set automatic wrapping and new line
+vim.cmd([[setlocal textwidth=80]])
+vim.cmd([[setlocal wrap]])
+vim.cmd([[setlocal formatoptions+=n]])
 
--- Custom keymaps
+-- Set default color scheme
+vim.o.background = 'dark'
+vim.o.termguicolors = true
+vim.cmd([[colorscheme gruvbox]])
+
+
+-- Set custom keymaps                      🐕
 -- ******************************************
 
+-- Handy scape with double semi-colon
 vim.keymap.set('i', '::', '<ESC>')
 
+-- [C]lear [H]ighlights
+vim.keymap.set('n', '<leader>ch', ':nohlsearch<CR>')
 
--- Packer install
--- ******************************************
 
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
-end
+-- Set plugins config                     🐕
+-- *****************************************
 
-local packer_bootstrap = ensure_packer()
-
-return require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
-  -- My plugins here
-  -- use 'foo1/bar1.nvim'
-  -- use 'foo2/bar2.nvim'
-
-  -- Automatically set up your configuration after cloning packer.nvim
-  -- Put this at the end after all plugins
-  if packer_bootstrap then
-    require('packer').sync()
-  end
-end)
-
+require('lualine').setup {
+    options = {
+        icons_enabled = false,
+        theme = 'gruvbox',
+    },
+    sections = {
+        lualine_a = {
+            {
+                'filename',
+                path = 1,
+            }
+        }
+    }
+}
