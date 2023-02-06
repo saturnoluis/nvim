@@ -1,40 +1,121 @@
--- Install Packer                          🐕
+-- Packer install
 -- ******************************************
 
-local ensure_packer = function()
-   local fn = vim.fn
-   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-   if fn.empty(fn.glob(install_path)) > 0 then
-      fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-      vim.cmd [[packadd packer.nvim]]
-      return true
-   end
-   return false
+local start_packer_bootstrap = function()
+    local fn = vim.fn
+    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+
+    if fn.empty(fn.glob(install_path)) > 0 then
+        fn.system({
+            'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim',
+            install_path
+        })
+        vim.cmd [[packadd packer.nvim]]
+        return true
+    end
+
+    return false
 end
 
-local packer_bootstrap = ensure_packer()
+local packer_bootstrap = start_packer_bootstrap()
 
 require('packer').startup(function(use)
-   use 'wbthomason/packer.nvim'
 
-   -- Color schemes
-   use 'navarasu/onedark.nvim'
-   use 'ellisonleao/gruvbox.nvim'
+    use 'wbthomason/packer.nvim'
 
-   -- Statusline
-   use {
-      'nvim-lualine/lualine.nvim'
-   }
+    -- Color schemes
+    use 'navarasu/onedark.nvim'
+    use 'ellisonleao/gruvbox.nvim'
 
-   -- Automatically set up your configuration after cloning packer.nvim
-   -- Put this at the end after all plugins
-   if packer_bootstrap then
-      require('packer').sync()
-   end
+    -- Statusline
+    use {
+       'nvim-lualine/lualine.nvim'
+    }
+
+    -- Treesitter for syntax highlighting
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate',
+        requires = {
+            {'nvim-treesitter/nvim-treesitter-refactor'}
+        }
+    }
+
+    -- Telescope fuzzy finder
+    use {
+        'nvim-telescope/telescope.nvim', tag = '0.1.x',
+        requires = {
+            {'nvim-lua/plenary.nvim'}
+        }
+    }
+
+    -- Automatically set up your configuration after cloning packer.nvim
+    -- Put this at the end after all plugins
+    if packer_bootstrap then
+        require('packer').sync()
+    end
 end)
 
+-- Plugins configurations
+-- *****************************************
 
--- Set custom configurations               🐕
+require('lualine').setup {
+    options = {
+        icons_enabled = false,
+        theme = 'gruvbox',
+    },
+    sections = {
+        lualine_a = {'mode'},
+        lualine_b = {'branch', 'diff', 'diagnostics'},
+        lualine_c = {{'filename', path = 1 }},
+        lualine_x = {'encoding', 'filetype'},
+        lualine_y = {'progress'},
+        lualine_z = {'location'}
+    },
+}
+
+require('nvim-treesitter.configs').setup {
+    ensure_installed = {
+        'bash',
+        'c',
+        'cpp',
+        'css',
+        'diff',
+        'javascript',
+        'json',
+        'lua',
+        'markdown',
+        'php',
+        'python',
+        'rust',
+        'typescript',
+        'yaml',
+    },
+    highlight = {
+        enable = true,
+    },
+    indent = {
+        enable = true,
+    },
+    refactor = {
+        smart_rename = {
+            enable = true,
+            keymaps = {
+                smart_rename = '<leader>sr', -- Smart Rename
+            },
+        },
+        navigation = {
+            enable = true,
+            keymaps = {
+                goto_definition = '<leader>gd', -- Go to Definition
+                goto_next_usage = '<leader>gn', -- Go to Next usage
+                goto_previous_usage = '<leader>gN',
+            },
+        },
+    },
+}
+
+-- Custom vim configurations
 -- ******************************************
 
 -- Map leader key
@@ -70,31 +151,17 @@ vim.o.background = 'dark'
 vim.o.termguicolors = true
 vim.cmd([[colorscheme gruvbox]])
 
-
--- Set custom keymaps                      🐕
+-- Custom keymaps
 -- ******************************************
 
 -- Handy scape with double semi-colon
 vim.keymap.set('i', '::', '<ESC>')
 
--- [C]lear [H]ighlights
+-- Clear Highlights
 vim.keymap.set('n', '<leader>ch', ':nohlsearch<CR>')
 
+-- Telescope key bindings
+vim.keymap.set('n', '<leader><leader>', ':Telescope buffers<CR>')
+vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>')
+vim.keymap.set('n', '<leader>fg', ':Telescope live_grep<CR>')
 
--- Set plugins config                     🐕
--- *****************************************
-
-require('lualine').setup {
-    options = {
-        icons_enabled = false,
-        theme = 'gruvbox',
-    },
-    sections = {
-        lualine_a = {
-            {
-                'filename',
-                path = 1,
-            }
-        }
-    }
-}
