@@ -8,8 +8,8 @@ Feel free to use as your own.
 
 | Description                   | Keybinding         |
 |-------------------------------|--------------------|
-| Leader key                    | SP                 |
-| Alternative to ESC key        | ::                 |
+| Leader key                    | `SP`               |
+| Alternative to ESC key        | `::`               |
 | Clear search highlights       | `<leader>ch`       |
 | Find files                    | `<leader>ff`       |
 | Find files using grep         | `<leader>fg`       |
