@@ -1,8 +1,27 @@
 # My nvim configs
 
 The configs and plugins I use to develop in nvim.
+
 Feel free to use as your own.
 
+## Configured keybindings
+
+| Description                   | Keybinding       |
+|-------------------------------|------------------|
+| Leader key                    | SP               |
+| Alternative to ESC key        | ::               |
+| Clear search highlights       | <leader>ch       |
+| Find files                    | <leader>ff       |
+| Find files using grep         | <leader>fg       |
+| Find variable definition      | <leader>fd       |
+| Find variable implementation  | <leader>fi       | 
+| Find variable references      | <leader>fr       |
+| Go to next variable usage     | <leader>gn       |
+| Go to previous variable usage | <leader>gN       |
+| Go to variable definition     | <leader>gd       |
+| List opened buffers           | <leader><leader> |
+| Smart rename variable         | <leader>rn       |
+ 
 ## Plugins used
 
 - [__Packer__](https://github.com/wbthomason/packer.nvim):
@@ -34,3 +53,6 @@ Feel free to use as your own.
 
 - [Make Neovim BETTER than VSCode - LSP tutorial](
   https://www.youtube.com/watch?v=lpQMeFph1RE)
+
+- [neovim docs](
+  https://neovim.io/doc/user/options.html)
