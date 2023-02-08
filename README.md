@@ -5,23 +5,23 @@ Feel free to use as your own.
 
 ## Plugins used
 
-__Packer__: Plugin and package management
-https://github.com/wbthomason/packer.nvim
+- [__Packer__](https://github.com/wbthomason/packer.nvim):
+  Plugin and package management
 
-__Lualine__: Neovim statusline
-https://github.com/nvim-lualine/lualine.nvim
+- [__Lualine__](https://github.com/nvim-lualine/lualine.nvim):
+  Neovim statusline
 
-__Treesitter__: Syntax highlighting for neovim
-https://github.com/nvim-treesitter/nvim-treesitter
+- [__Treesitter__](https://github.com/nvim-treesitter/nvim-treesitter):
+  Syntax highlighting for neovim
 
-__Mason__: Easily install and manage LSP servers
-https://github.com/williamboman/mason.nvim
+- [__Mason__](https://github.com/williamboman/mason.nvim):
+  Easily install and manage LSP servers
 
-__Mason LSP Config__: Bridges mason.nvim with the lspconfig plugin
-https://github.com/williamboman/mason-lspconfig.nvim
+- [__Mason LSP Config__](https://github.com/williamboman/mason-lspconfig.nvim):
+  Bridges mason.nvim with the lspconfig plugin
 
-__LSP Config__: Configs for the Nvim LSP client
-https://github.com/neovim/nvim-lspconfig
+- [__LSP Config__](https://github.com/neovim/nvim-lspconfig):
+  Configs for the Nvim LSP client
 
 ## Color schemes installed
 - Gruvbox: https://github.com/ellisonleao/gruvbox.nvim
@@ -29,10 +29,8 @@ https://github.com/neovim/nvim-lspconfig
 
 # References
 
-- How to Configure Neovim to make it Amazing
-  https://www.youtube.com/watch?v=J9yqSdvAKXY
+- [How to Configure Neovim to make it Amazing](
+  https://www.youtube.com/watch?v=J9yqSdvAKXY)
 
-- Make Neovim BETTER than VSCode - LSP tutorial
-  https://www.youtube.com/watch?v=lpQMeFph1RE
-
-- 
+- [Make Neovim BETTER than VSCode - LSP tutorial](
+  https://www.youtube.com/watch?v=lpQMeFph1RE)
