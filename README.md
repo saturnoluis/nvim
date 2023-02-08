@@ -1,5 +1,8 @@
 # My nvim configs
 
+The configs and plugins I use to develop in nvim.
+Feel free to use as your own.
+
 ## Plugins used
 
 __Packer__: Plugin and package management
@@ -23,3 +26,13 @@ https://github.com/neovim/nvim-lspconfig
 ## Color schemes installed
 - Gruvbox: https://github.com/ellisonleao/gruvbox.nvim
 - Onedark: https://github.com/navarasu/onedark.nvim
+
+# References
+
+- How to Configure Neovim to make it Amazing
+  https://www.youtube.com/watch?v=J9yqSdvAKXY
+
+- Make Neovim BETTER than VSCode - LSP tutorial
+  https://www.youtube.com/watch?v=lpQMeFph1RE
+
+- 
