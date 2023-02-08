@@ -1,7 +1,7 @@
 -- Packer install
 -- ******************************************
 
-local start_packer_bootstrap = function()
+local ensure_packer = function()
     local fn = vim.fn
     local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
@@ -17,7 +17,7 @@ local start_packer_bootstrap = function()
     return false
 end
 
-local packer_bootstrap = start_packer_bootstrap()
+local packer_bootstrap = ensure_packer()
 
 require('packer').startup(function(use)
 
@@ -27,12 +27,12 @@ require('packer').startup(function(use)
     use 'navarasu/onedark.nvim'
     use 'ellisonleao/gruvbox.nvim'
 
-    -- Statusline
+    -- Lualine: Statusline at the bottom
     use {
        'nvim-lualine/lualine.nvim'
     }
 
-    -- Treesitter for syntax highlighting
+    -- Treesitter: Syntax highlighting
     use {
         'nvim-treesitter/nvim-treesitter',
         run = ':TSUpdate',
@@ -41,7 +41,7 @@ require('packer').startup(function(use)
         }
     }
 
-    -- Telescope fuzzy finder
+    -- Telescope: Fuzzy finder
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.x',
         requires = {
@@ -49,8 +49,14 @@ require('packer').startup(function(use)
         }
     }
 
-    -- Automatically set up your configuration after cloning packer.nvim
-    -- Put this at the end after all plugins
+    -- Mason: Manage LSP servers, DAP servers, linters, and formatters
+    use {
+        'williamboman/mason.nvim',
+        'williamboman/mason-lspconfig.nvim',
+        'neovim/nvim-lspconfig',
+    }
+
+    -- Automatically set up the configuration after cloning packer.nvim
     if packer_bootstrap then
         require('packer').sync()
     end
@@ -59,6 +65,7 @@ end)
 -- Plugins configurations
 -- *****************************************
 
+-- Lualine config
 require('lualine').setup {
     options = {
         icons_enabled = false,
@@ -74,6 +81,7 @@ require('lualine').setup {
     },
 }
 
+-- Treesitter config
 require('nvim-treesitter.configs').setup {
     ensure_installed = {
         'bash',
@@ -101,19 +109,61 @@ require('nvim-treesitter.configs').setup {
         smart_rename = {
             enable = true,
             keymaps = {
-                smart_rename = '<leader>sr', -- Smart Rename
+                smart_rename = '<leader>rn', -- Keymap: Smart Rename
             },
         },
         navigation = {
             enable = true,
             keymaps = {
-                goto_definition = '<leader>gd', -- Go to Definition
-                goto_next_usage = '<leader>gn', -- Go to Next usage
+                goto_definition = '<leader>gd', -- Keymap: Go Definition
+                goto_next_usage = '<leader>gn', -- Keymap: Go Next usage
                 goto_previous_usage = '<leader>gN',
             },
         },
     },
 }
+
+-- Mason config
+require('mason').setup({
+    ui = {
+        icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+        }
+    }
+})
+require('mason-lspconfig').setup({
+    ensure_installed = {
+        'sumneko_lua',
+        'angularls',
+        'bashls',
+        'cssls',
+        'eslint',
+        'html',
+        'jsonls',
+        'pyright',
+        'tsserver',
+        'yamlls',
+    },
+    automatic_installation = true,
+})
+
+-- LSP config
+require('lspconfig').sumneko_lua.setup {
+    settings = {
+        Lua = { diagnostics = { globals = {'vim'} } },
+    },
+}
+require('lspconfig').angularls.setup {}
+require('lspconfig').bashls.setup {}
+require('lspconfig').cssls.setup {}
+require('lspconfig').eslint.setup {}
+require('lspconfig').html.setup {}
+require('lspconfig').jsonls.setup {}
+require('lspconfig').pyright.setup {}
+require('lspconfig').tsserver.setup {}
+require('lspconfig').yamlls.setup {}
 
 -- Custom vim configurations
 -- ******************************************
@@ -165,3 +215,9 @@ vim.keymap.set('n', '<leader><leader>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope live_grep<CR>')
 
+-- Mason key bidings
+vim.keymap.set('n', '<leader>fd', vim.lsp.buf.definition, {})
+vim.keymap.set('n', '<leader>fi', vim.lsp.buf.implementation, {})
+vim.keymap.set('n', '<leader>fr', require('telescope.builtin').lsp_references, {})
+
+-- END
