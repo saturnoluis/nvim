@@ -135,7 +135,7 @@ require('mason').setup({
 })
 require('mason-lspconfig').setup({
     ensure_installed = {
-        'sumneko_lua',
+        'lua_ls',
         'angularls',
         'bashls',
         'cssls',
@@ -150,7 +150,7 @@ require('mason-lspconfig').setup({
 })
 
 -- LSP config
-require('lspconfig').sumneko_lua.setup {
+require('lspconfig').lua_ls.setup {
     settings = {
         Lua = { diagnostics = { globals = {'vim'} } },
     },
