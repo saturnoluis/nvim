@@ -27,6 +27,9 @@ require('packer').startup(function(use)
     use 'navarasu/onedark.nvim'
     use 'ellisonleao/gruvbox.nvim'
 
+    -- Neoformat: Plugin for formatting code
+    use 'sbdchd/neoformat'
+
     -- Lualine: Statusline at the bottom
     use {
        'nvim-lualine/lualine.nvim'
@@ -54,6 +57,13 @@ require('packer').startup(function(use)
         'williamboman/mason.nvim',
         'williamboman/mason-lspconfig.nvim',
         'neovim/nvim-lspconfig',
+    }
+
+    -- nvim-cmp: Completion engine plugin for neovim written in Lua
+    use {
+        'hrsh7th/nvim-cmp',
+        'hrsh7th/cmp-nvim-lsp',
+        'L3MON4D3/LuaSnip',
     }
 
     -- Automatically set up the configuration after cloning packer.nvim
@@ -89,6 +99,7 @@ require('nvim-treesitter.configs').setup {
         'cpp',
         'css',
         'diff',
+        'java',
         'javascript',
         'json',
         'lua',
@@ -135,13 +146,14 @@ require('mason').setup({
 })
 require('mason-lspconfig').setup({
     ensure_installed = {
-        'lua_ls',
         'angularls',
         'bashls',
         'cssls',
         'eslint',
         'html',
+        'jdtls',
         'jsonls',
+        'lua_ls',
         'pyright',
         'tsserver',
         'yamlls',
@@ -150,20 +162,48 @@ require('mason-lspconfig').setup({
 })
 
 -- LSP config
+local capabilities = require('cmp_nvim_lsp').default_capabilities();
+
 require('lspconfig').lua_ls.setup {
+    capabilities = capabilities,
     settings = {
         Lua = { diagnostics = { globals = {'vim'} } },
     },
 }
-require('lspconfig').angularls.setup {}
-require('lspconfig').bashls.setup {}
-require('lspconfig').cssls.setup {}
-require('lspconfig').eslint.setup {}
-require('lspconfig').html.setup {}
-require('lspconfig').jsonls.setup {}
-require('lspconfig').pyright.setup {}
-require('lspconfig').tsserver.setup {}
-require('lspconfig').yamlls.setup {}
+require('lspconfig').angularls.setup {capabilities = capabilities}
+require('lspconfig').bashls.setup {capabilities = capabilities}
+require('lspconfig').cssls.setup {capabilities = capabilities}
+require('lspconfig').eslint.setup {capabilities = capabilities}
+require('lspconfig').html.setup {capabilities = capabilities}
+require('lspconfig').jdtls.setup {capabilities = capabilities}
+require('lspconfig').jsonls.setup {capabilities = capabilities}
+require('lspconfig').pyright.setup {capabilities = capabilities}
+require('lspconfig').tsserver.setup {capabilities = capabilities}
+require('lspconfig').yamlls.setup {capabilities = capabilities}
+
+-- nvim-cmp autocomplete config
+local cmp = require('cmp')
+
+cmp.setup({
+    mapping = cmp.mapping.preset.insert({
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    }),
+    snippet = {
+        expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+        end,
+    },
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+    }, {
+        { name = 'buffer' },
+    })
+});
 
 -- Custom vim configurations
 -- ******************************************
@@ -219,5 +259,10 @@ vim.keymap.set('n', '<leader>fg', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>fd', vim.lsp.buf.definition, {})
 vim.keymap.set('n', '<leader>fi', vim.lsp.buf.implementation, {})
 vim.keymap.set('n', '<leader>fr', require('telescope.builtin').lsp_references, {})
+
+-- Insert curly braces, brackets, and parenthesis
+vim.keymap.set('n', '<leader>ic', '<ESC>a{}<Left>'); -- {C}urly braces
+vim.keymap.set('n', '<leader>ib', '<ESC>a{}<Left>'); -- [B]rackets
+vim.keymap.set('n', '<leader>ip', '<ESC>a()<Left>'); -- (P)arenthesis
 
 -- END
