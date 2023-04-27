@@ -7,7 +7,11 @@ local ensure_packer = function()
 
     if fn.empty(fn.glob(install_path)) > 0 then
         fn.system({
-            'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim',
+            'git',
+            'clone',
+            '--depth',
+            '1',
+            'https://github.com/wbthomason/packer.nvim',
             install_path
         })
         vim.cmd [[packadd packer.nvim]]
@@ -26,13 +30,14 @@ require('packer').startup(function(use)
     -- Color schemes
     use 'navarasu/onedark.nvim'
     use 'ellisonleao/gruvbox.nvim'
+    use 'Mofiqul/adwaita.nvim'
 
     -- Neoformat: Plugin for formatting code
     use 'sbdchd/neoformat'
 
     -- Lualine: Statusline at the bottom
     use {
-       'nvim-lualine/lualine.nvim'
+        'nvim-lualine/lualine.nvim'
     }
 
     -- Treesitter: Syntax highlighting
@@ -42,6 +47,11 @@ require('packer').startup(function(use)
         requires = {
             {'nvim-treesitter/nvim-treesitter-refactor'}
         }
+    }
+
+    -- nvim-ts-autotag: Autoclose html tags using treesitter
+    use {
+        'windwp/nvim-ts-autotag',
     }
 
     -- Telescope: Fuzzy finder
@@ -79,7 +89,7 @@ end)
 require('lualine').setup {
     options = {
         icons_enabled = false,
-        theme = 'gruvbox',
+        theme = 'adwaita',
     },
     sections = {
         lualine_a = {'mode'},
@@ -87,7 +97,16 @@ require('lualine').setup {
         lualine_c = {{'filename', path = 1 }},
         lualine_x = {'encoding', 'filetype'},
         lualine_y = {'progress'},
-        lualine_z = {'location'}
+        lualine_z = {'location'},
+    },
+}
+
+-- Telecope config
+require('telescope').setup{ 
+    defaults = { 
+        file_ignore_patterns = { 
+            "node_modules",
+        },
     },
 }
 
@@ -99,6 +118,7 @@ require('nvim-treesitter.configs').setup {
         'cpp',
         'css',
         'diff',
+        'html',
         'java',
         'javascript',
         'json',
@@ -107,6 +127,7 @@ require('nvim-treesitter.configs').setup {
         'php',
         'python',
         'rust',
+        'svelte',
         'typescript',
         'yaml',
     },
@@ -132,6 +153,9 @@ require('nvim-treesitter.configs').setup {
             },
         },
     },
+    autotag = {
+        enable = true,
+    }
 }
 
 -- Mason config
@@ -155,6 +179,8 @@ require('mason-lspconfig').setup({
         'jsonls',
         'lua_ls',
         'pyright',
+        'rust_analyzer',
+        'svelte',
         'tsserver',
         'yamlls',
     },
@@ -162,39 +188,51 @@ require('mason-lspconfig').setup({
 })
 
 -- LSP config
+local lspconfig = require('lspconfig')
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+
+-- LSP servers
+local servers = {
+    'lua_ls',
+    'rust_analyzer',
+    'angularls',
+    'bashls',
+    'cssls',
+    'eslint',
+    'html',
+    'jdtls',
+    'jsonls',
+    'pyright',
+    'svelte',
+    'tsserver',
+    'yamlls',
+}
+
+-- Common LSP server settings
 local capabilities = require('cmp_nvim_lsp').default_capabilities();
 
-require('lspconfig').lua_ls.setup {
+local common_settings = {
     capabilities = capabilities,
-    settings = {
-        Lua = { diagnostics = { globals = {'vim'} } },
-    },
 }
-require('lspconfig').angularls.setup {capabilities = capabilities}
-require('lspconfig').bashls.setup {capabilities = capabilities}
-require('lspconfig').cssls.setup {capabilities = capabilities}
-require('lspconfig').eslint.setup {capabilities = capabilities}
-require('lspconfig').html.setup {capabilities = capabilities}
-require('lspconfig').jdtls.setup {capabilities = capabilities}
-require('lspconfig').jsonls.setup {capabilities = capabilities}
-require('lspconfig').pyright.setup {capabilities = capabilities}
-require('lspconfig').tsserver.setup {capabilities = capabilities}
-require('lspconfig').yamlls.setup {capabilities = capabilities}
 
--- nvim-cmp autocomplete config
-local cmp = require('cmp')
+-- Setup LSP servers
+for _, lsp in ipairs(servers) do
+    lspconfig[lsp].setup(common_settings)
+end
 
+-- Setup nvim-cmp autocomplete
 cmp.setup({
-    mapping = cmp.mapping.preset.insert({
+    mapping = {
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.abort(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    }),
+    },
     snippet = {
         expand = function(args)
-            require('luasnip').lsp_expand(args.body)
+            luasnip.lsp_expand(args.body)
         end,
     },
     sources = cmp.config.sources({
@@ -202,8 +240,8 @@ cmp.setup({
         { name = 'luasnip' },
     }, {
         { name = 'buffer' },
-    })
-});
+    }),
+})
 
 -- Custom vim configurations
 -- ******************************************
@@ -220,7 +258,7 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 
 -- Insert spaces instead of tabs
-vim.opt.expandtab = true
+vim.opt.expandtab = false -- False means tabs instead of spaces
 vim.opt.smartindent = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
@@ -233,13 +271,15 @@ vim.opt.autoread = true
 
 -- Set automatic wrapping and new line
 vim.cmd([[setlocal textwidth=80]])
-vim.cmd([[setlocal wrap]])
-vim.cmd([[setlocal formatoptions+=n]])
+vim.cmd([[setlocal nowrap]])
+
+-- Set clipboard
+vim.cmd([[setlocal clipboard+=unnamedplus]])
 
 -- Set default color scheme
 vim.o.background = 'dark'
 vim.o.termguicolors = true
-vim.cmd([[colorscheme gruvbox]])
+vim.cmd([[colorscheme adwaita]])
 
 -- Custom keymaps
 -- ******************************************
@@ -262,7 +302,14 @@ vim.keymap.set('n', '<leader>fr', require('telescope.builtin').lsp_references, {
 
 -- Insert curly braces, brackets, and parenthesis
 vim.keymap.set('n', '<leader>ic', '<ESC>a{}<Left>'); -- {C}urly braces
-vim.keymap.set('n', '<leader>ib', '<ESC>a{}<Left>'); -- [B]rackets
+vim.keymap.set('n', '<leader>ib', '<ESC>a[]<Left>'); -- [B]rackets
 vim.keymap.set('n', '<leader>ip', '<ESC>a()<Left>'); -- (P)arenthesis
+
+vim.keymap.set('n', '<leader>h', '<Home>');
+vim.keymap.set('n', '<leader>l', '<End>');
+
+-- Enable spell checking
+vim.opt.spelllang = 'en_us'
+vim.opt.spell = true
 
 -- END
