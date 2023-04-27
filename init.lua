@@ -271,7 +271,7 @@ vim.opt.autoread = true
 
 -- Set automatic wrapping and new line
 vim.cmd([[setlocal textwidth=80]])
-vim.cmd([[setlocal nowrap]])
+vim.cmd([[setlocal wrap]])
 
 -- Set clipboard
 vim.cmd([[setlocal clipboard+=unnamedplus]])
