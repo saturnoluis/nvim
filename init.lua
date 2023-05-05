@@ -75,6 +75,14 @@ require('packer').startup(function(use)
         'hrsh7th/cmp-nvim-lsp',
         'L3MON4D3/LuaSnip',
     }
+    
+    -- trouble.nvim: A pretty diagnostics, references, telescope results
+    use {
+        'folke/trouble.nvim',
+        requires = {
+            {'nvim-tree/nvim-web-devicons'}
+        }
+    }
 
     -- Automatically set up the configuration after cloning packer.nvim
     if packer_bootstrap then
@@ -102,10 +110,11 @@ require('lualine').setup {
 }
 
 -- Telecope config
-require('telescope').setup{ 
-    defaults = { 
-        file_ignore_patterns = { 
+require('telescope').setup{
+    defaults = {
+        file_ignore_patterns = {
             "node_modules",
+			"index.js",
         },
     },
 }
@@ -287,18 +296,27 @@ vim.cmd([[colorscheme adwaita]])
 -- Handy scape with double semi-colon
 vim.keymap.set('i', '::', '<ESC>')
 
+-- Handy scape with double leader
+vim.keymap.set('i', '<leader><leader>', '<ESC>')
+
 -- Clear Highlights
 vim.keymap.set('n', '<leader>ch', ':nohlsearch<CR>')
 
 -- Telescope key bindings
-vim.keymap.set('n', '<leader><leader>', ':Telescope buffers<CR>')
+vim.keymap.set('n', '<leader>b', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope live_grep<CR>')
+vim.keymap.set('n', '<leader>fc', ':Telescope grep_string<CR>')
 
 -- Mason key bidings
 vim.keymap.set('n', '<leader>fd', vim.lsp.buf.definition, {})
 vim.keymap.set('n', '<leader>fi', vim.lsp.buf.implementation, {})
 vim.keymap.set('n', '<leader>fr', require('telescope.builtin').lsp_references, {})
+
+-- Trouble keybidings
+vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>", {
+    silent = true, noremap = true
+})
 
 -- Insert curly braces, brackets, and parenthesis
 vim.keymap.set('n', '<leader>ic', '<ESC>a{}<Left>'); -- {C}urly braces
