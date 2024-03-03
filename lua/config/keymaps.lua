@@ -30,6 +30,6 @@ vim.keymap.set(
 vim.keymap.set(
 	"n",
 	"<leader>p",
-	":Neotree float<CR>",
+	":Neotree toggle<CR>",
 	{ noremap = true, desc = "Open file explorer" }
 )

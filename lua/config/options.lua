@@ -7,6 +7,8 @@ vim.opt.expandtab = false -- False means tabs instead of spaces
 vim.opt.smartindent = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+vim.opt.textwidth = 80
+vim.opt.colorcolumn = "+1"
 
 -- Show white spaces
 vim.opt.list = true

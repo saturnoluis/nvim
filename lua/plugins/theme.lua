@@ -1,4 +1,6 @@
 return {
+	-- add Adwaita
+	{ "Mofiqul/adwaita.nvim" },
 	-- add gruvbox
 	{ "ellisonleao/gruvbox.nvim" },
 
